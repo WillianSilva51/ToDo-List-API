@@ -29,7 +29,11 @@ class TaskController {
 
     @PostMapping
     public ResponseEntity<CreateTaskDTO> createTask(@RequestBody CreateTaskDTO taskDTO) {
-        return ((taskService.createTask(taskDTO) ? ResponseEntity.ok(taskDTO) : ResponseEntity.status(HttpStatus.BAD_REQUEST).build()));
+        if (taskService.createTask(taskDTO)) {
+            return ResponseEntity.ok(taskDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PutMapping
