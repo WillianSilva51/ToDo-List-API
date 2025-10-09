@@ -41,8 +41,8 @@ class TaskController {
         return ResponseEntity.ok(taskService.updateTask(updateTaskDTO));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Boolean> deleteTask(@RequestBody TaskDTO taskDTO) {
-        return ResponseEntity.ok(taskService.deleteTask(taskDTO));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteTask(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.deleteTask(id));
     }
 }
