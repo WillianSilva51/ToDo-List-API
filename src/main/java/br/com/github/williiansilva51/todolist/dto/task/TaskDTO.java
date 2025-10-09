@@ -1,4 +1,4 @@
-package br.com.github.williiansilva51.todolist.dto;
+package br.com.github.williiansilva51.todolist.dto.task;
 
 import java.time.LocalDateTime;
 
