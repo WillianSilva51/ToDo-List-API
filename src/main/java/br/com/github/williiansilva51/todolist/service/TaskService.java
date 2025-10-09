@@ -36,7 +36,6 @@ public class TaskService {
     public boolean updateTask(UpdateTaskDTO taskDTO) {
         Task task = taskRepository.findByTitle(taskDTO.title()).orElseThrow();
 
-        task.setTitle(taskDTO.title());
         task.setDescription(taskDTO.description());
         task.setCompleted(taskDTO.completed());
 
