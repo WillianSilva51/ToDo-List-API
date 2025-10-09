@@ -1,0 +1,78 @@
+=========================================================================
+Arquivos de Build e Artefatos
+Ignora os diretórios de saída da compilação do Maven e Gradle.
+=========================================================================
+/target/
+/build/
+
+Ignora o JAR do Maven Wrapper, pois ele é baixado automaticamente.
+O script 'mvnw' deve ser mantido no repositório.
+.mvn/wrapper/maven-wrapper.jar
+
+Arquivos gerados pelo Maven Release Plugin
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+
+Relatórios de cobertura de código (JaCoCo, Cobertura, etc.)
+/target/site/
+/target/jacoco/
+
+=========================================================================
+Variáveis de Ambiente
+NUNCA comite arquivos .env que contêm segredos.
+=========================================================================
+.env
+
+=========================================================================
+Logs, Dumps e Arquivos Temporários
+=========================================================================
+.log
+.log.
+hs_err_pid*
+replay_pid*
+*.tmp
+
+Arquivos de swap e backup de editores comuns (Vim, Emacs, etc.)
+*.swp
+*~
+
+=========================================================================
+Arquivos Específicos de IDEs
+Ignora configurações que são específicas da máquina do desenvolvedor.
+=========================================================================
+IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+Spring Tool Suite (STS) / Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+bin/
+
+NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+!/src/main//build/
+!/src/test//build/
+
+VS Code
+.vscode/
+
+=========================================================================
+Arquivos de Sistema Operacional
+Ignora arquivos de metadados gerados pelo macOS e Windows.
+=========================================================================
+.DS_Store
+Thumbs.db
