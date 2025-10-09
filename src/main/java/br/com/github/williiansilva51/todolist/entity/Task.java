@@ -16,7 +16,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String title;
 
     private String description;
@@ -25,7 +25,7 @@ public class Task {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime completedAt;
+    private LocalDateTime completedAt = null;
 
     public Task(String title, String description) {
         this.title = title;
