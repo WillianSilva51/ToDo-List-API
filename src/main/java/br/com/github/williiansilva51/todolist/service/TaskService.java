@@ -64,7 +64,7 @@ public class TaskService {
 
     public Boolean deleteTask(Long id) {
         if (!taskRepository.existsById(id)) {
-            return false;
+            throw new ResourceNotFoundException("Task not found with id: " + id);
         }
         taskRepository.deleteById(id);
         return true;
