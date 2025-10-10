@@ -56,7 +56,8 @@ public class TaskService {
 
         if (task.getCompleted()) {
             task.setCompletedAt(LocalDateTime.now());
-        }
+        } else
+            task.setCompletedAt(null);
 
         taskRepository.save(task);
         return true;
