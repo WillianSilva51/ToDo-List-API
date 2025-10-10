@@ -22,9 +22,9 @@ class TaskController {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 
-    @GetMapping(params = "id")
-    public ResponseEntity<TaskDTO> getTaskById(Long id) {
-        return ResponseEntity.ok(taskService.getTaskById(id).orElseThrow());
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
     @PostMapping
@@ -36,9 +36,9 @@ class TaskController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<Boolean> updateTask(@RequestBody UpdateTaskDTO updateTaskDTO) {
-        return ResponseEntity.ok(taskService.updateTask(updateTaskDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> updateTask(@PathVariable Long id, @RequestBody UpdateTaskDTO updateTaskDTO) {
+        return ResponseEntity.ok(taskService.updateTask(id, updateTaskDTO));
     }
 
     @DeleteMapping("/{id}")

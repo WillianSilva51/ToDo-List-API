@@ -25,6 +25,10 @@ public class Task {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private LocalDateTime completedAt = null;
 
     public Task(String title, String description) {
