@@ -1,4 +1,6 @@
 package br.com.github.williiansilva51.todolist.dto.task;
 
-public record CreateTaskDTO(String title, String description) {
+import jakarta.validation.constraints.NotBlank;
+
+public record CreateTaskDTO(@NotBlank String title, String description) {
 }

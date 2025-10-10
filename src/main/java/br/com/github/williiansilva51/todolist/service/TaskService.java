@@ -4,6 +4,7 @@ import br.com.github.williiansilva51.todolist.dto.task.CreateTaskDTO;
 import br.com.github.williiansilva51.todolist.dto.task.TaskDTO;
 import br.com.github.williiansilva51.todolist.dto.task.UpdateTaskDTO;
 import br.com.github.williiansilva51.todolist.entity.Task;
+import br.com.github.williiansilva51.todolist.handler.ResourceNotFoundException;
 import br.com.github.williiansilva51.todolist.repository.TaskRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Builder
 @AllArgsConstructor
@@ -19,12 +19,17 @@ import java.util.Optional;
 public class TaskService {
     private TaskRepository taskRepository;
 
-    public Optional<TaskDTO> getTaskById(Long id) {
-        return Optional.of(taskRepository.findById(id).map(task -> new TaskDTO(task.getTitle(), task.getDescription(), task.getCompleted(), task.getCreatedAt(), task.getCompletedAt()))).orElseThrow();
+    public TaskDTO getTaskById(Long id) {
+        return taskRepository.findById(id)
+                .map(task -> new TaskDTO(task.getTitle(), task.getDescription(), task.getCompleted(), task.getCreatedAt(), task.getCompletedAt()))
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
     }
 
     public List<TaskDTO> getAllTasks() {
-        return taskRepository.findAll().stream().map(task -> new TaskDTO(task.getTitle(), task.getDescription(), task.getCompleted(), task.getCreatedAt(), task.getCompletedAt())).toList();
+        return taskRepository.findAll()
+                .stream()
+                .map(task -> new TaskDTO(task.getTitle(), task.getDescription(), task.getCompleted(), task.getCreatedAt(), task.getCompletedAt()))
+                .toList();
     }
 
     public boolean createTask(CreateTaskDTO taskDTO) {
@@ -33,11 +38,21 @@ public class TaskService {
         return true;
     }
 
-    public boolean updateTask(UpdateTaskDTO taskDTO) {
-        Task task = taskRepository.findByTitle(taskDTO.title()).orElseThrow();
+    public boolean updateTask(Long id, UpdateTaskDTO taskDTO) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
-        task.setDescription(taskDTO.description());
-        task.setCompleted(taskDTO.completed());
+        if (!task.getTitle().equals(taskDTO.title())) {
+            task.setTitle(taskDTO.title());
+        }
+
+        if (!task.getDescription().equals(taskDTO.description())) {
+            task.setDescription(taskDTO.description());
+        }
+
+        if (!task.getCompleted().equals(taskDTO.completed())) {
+            task.setCompleted(taskDTO.completed());
+        }
 
         if (task.getCompleted()) {
             task.setCompletedAt(LocalDateTime.now());
@@ -47,11 +62,11 @@ public class TaskService {
         return true;
     }
 
-    public Boolean deleteTask(TaskDTO taskDTO) {
-        Task task = taskRepository.findByTitle(taskDTO.title()).orElseThrow();
-
-        taskRepository.delete(task);
-
+    public Boolean deleteTask(Long id) {
+        if (!taskRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Task not found with id: " + id);
+        }
+        taskRepository.deleteById(id);
         return true;
     }
 }
