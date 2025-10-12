@@ -3,17 +3,19 @@ package br.com.github.williiansilva51.todolist.controller;
 import br.com.github.williiansilva51.todolist.dto.task.CreateTaskDTO;
 import br.com.github.williiansilva51.todolist.dto.task.TaskDTO;
 import br.com.github.williiansilva51.todolist.dto.task.UpdateTaskDTO;
+import br.com.github.williiansilva51.todolist.entity.Task;
 import br.com.github.williiansilva51.todolist.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/task")
+@RequestMapping("/tasks")
 class TaskController {
     private final TaskService taskService;
 
@@ -28,17 +30,19 @@ class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateTaskDTO> createTask(@RequestBody CreateTaskDTO taskDTO) {
-        if (taskService.createTask(taskDTO)) {
-            return ResponseEntity.ok(taskDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+    public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody CreateTaskDTO taskDTO) {
+        Task createdTask = taskService.createTask(taskDTO);
+        TaskDTO taskResponse = new TaskDTO(createdTask.getTitle(), createdTask.getDescription(), createdTask.getCompleted(), createdTask.getCreatedAt(), createdTask.getCompletedAt());
+
+        return ResponseEntity.created(URI.create("/tasks/" + createdTask.getId())).body(taskResponse);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Boolean> updateTask(@PathVariable Long id, @RequestBody UpdateTaskDTO updateTaskDTO) {
-        return ResponseEntity.ok(taskService.updateTask(id, updateTaskDTO));
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody UpdateTaskDTO updateTaskDTO) {
+        Task updatedTask = taskService.updateTask(id, updateTaskDTO);
+        TaskDTO taskResponse = new TaskDTO(updatedTask.getTitle(), updatedTask.getDescription(), updatedTask.getCompleted(), updatedTask.getCreatedAt(), updatedTask.getCompletedAt());
+
+        return ResponseEntity.ok(taskResponse);
     }
 
     @DeleteMapping("/{id}")

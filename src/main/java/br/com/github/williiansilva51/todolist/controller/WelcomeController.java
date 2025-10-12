@@ -11,6 +11,6 @@ public class WelcomeController {
 
     @GetMapping
     public ResponseEntity<String> welcome() {
-        return ResponseEntity.ok("Welcome to Todolist API");
+        return ResponseEntity.ok("Welcome to To-do-list API");
     }
 }

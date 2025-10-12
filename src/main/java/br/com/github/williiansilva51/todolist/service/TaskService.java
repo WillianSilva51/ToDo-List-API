@@ -32,13 +32,15 @@ public class TaskService {
                 .toList();
     }
 
-    public boolean createTask(CreateTaskDTO taskDTO) {
-        taskRepository.save(new Task(taskDTO.title(), taskDTO.description()));
+    public Task createTask(CreateTaskDTO taskDTO) {
+        if (taskRepository.findByTitle(taskDTO.title()).isPresent()) {
+            throw new IllegalArgumentException("Task already exists with title: " + taskDTO.title());
+        }
 
-        return true;
+        return taskRepository.save(new Task(taskDTO.title(), taskDTO.description()));
     }
 
-    public boolean updateTask(Long id, UpdateTaskDTO taskDTO) {
+    public Task updateTask(Long id, UpdateTaskDTO taskDTO) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
@@ -59,8 +61,7 @@ public class TaskService {
         } else
             task.setCompletedAt(null);
 
-        taskRepository.save(task);
-        return true;
+        return taskRepository.save(task);
     }
 
     public Boolean deleteTask(Long id) {
