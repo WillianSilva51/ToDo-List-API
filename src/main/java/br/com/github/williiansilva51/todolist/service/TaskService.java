@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class TaskService {
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     public TaskDTO getTaskById(Long id) {
         return taskRepository.findById(id)

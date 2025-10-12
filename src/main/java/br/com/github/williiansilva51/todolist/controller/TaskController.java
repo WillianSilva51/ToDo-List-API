@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/task")
 class TaskController {
-    private TaskService taskService;
+    private final TaskService taskService;
 
     @GetMapping
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
