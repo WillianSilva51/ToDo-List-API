@@ -17,7 +17,7 @@ import java.net.URI;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users")
-class UserController {
+public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
