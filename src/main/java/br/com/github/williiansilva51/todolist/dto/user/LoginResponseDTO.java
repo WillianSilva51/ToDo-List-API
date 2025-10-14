@@ -1,4 +1,6 @@
 package br.com.github.williiansilva51.todolist.dto.user;
 
-public record LoginResponseDTO(String token) {
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginResponseDTO(@NotBlank String token) {
 }

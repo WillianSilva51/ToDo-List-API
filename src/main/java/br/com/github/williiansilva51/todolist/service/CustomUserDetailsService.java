@@ -1,6 +1,5 @@
 package br.com.github.williiansilva51.todolist.service;
 
-import br.com.github.williiansilva51.todolist.entity.User;
 import br.com.github.williiansilva51.todolist.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +12,9 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-
-        return new User(user.getUsername(), user.getPassword(), user.getAuthorities());
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 }

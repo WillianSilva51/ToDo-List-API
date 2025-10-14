@@ -1,6 +1,7 @@
 package br.com.github.williiansilva51.todolist.service;
 
 import br.com.github.williiansilva51.todolist.entity.User;
+import br.com.github.williiansilva51.todolist.handler.GenerateTokenException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -23,12 +24,13 @@ public class TokenService {
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.create().withIssuer("todo-list-api")
+            return JWT.create()
+                    .withIssuer("todo-list-api")
                     .withSubject(user.getUsername())
                     .withExpiresAt(getExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error while generating token", exception);
+            throw new GenerateTokenException("Error while generating token: " + exception.getMessage());
         }
     }
 
