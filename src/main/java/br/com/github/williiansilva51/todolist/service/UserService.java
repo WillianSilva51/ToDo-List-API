@@ -5,6 +5,7 @@ import br.com.github.williiansilva51.todolist.entity.User;
 import br.com.github.williiansilva51.todolist.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User createUser(CreateUserDTO createUserDTO) {
+    public User createUser(@NotNull CreateUserDTO createUserDTO) {
         if (userRepository.findByUsername(createUserDTO.username()).isPresent() || userRepository.findByEmail(createUserDTO.email()).isPresent()) {
             throw new IllegalArgumentException("Username or Email already exists");
         }
