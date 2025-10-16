@@ -32,7 +32,7 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody CreateTaskDTO taskDTO) {
         Task createdTask = taskService.createTask(taskDTO);
-        TaskDTO taskResponse = new TaskDTO(createdTask.getTitle(), createdTask.getDescription(), createdTask.getCompleted(), createdTask.getCreatedAt(), createdTask.getCompletedAt());
+        TaskDTO taskResponse = taskService.taskToTaskDTO(createdTask);
 
         return ResponseEntity.created(URI.create("/tasks/" + createdTask.getId())).body(taskResponse);
     }
@@ -40,7 +40,7 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody UpdateTaskDTO updateTaskDTO) {
         Task updatedTask = taskService.updateTask(id, updateTaskDTO);
-        TaskDTO taskResponse = new TaskDTO(updatedTask.getTitle(), updatedTask.getDescription(), updatedTask.getCompleted(), updatedTask.getCreatedAt(), updatedTask.getCompletedAt());
+        TaskDTO taskResponse = taskService.taskToTaskDTO(updatedTask);
 
         return ResponseEntity.ok(taskResponse);
     }

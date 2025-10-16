@@ -1,0 +1,53 @@
+package br.com.github.williiansilva51.todolist.service;
+
+import br.com.github.williiansilva51.todolist.entity.User;
+import br.com.github.williiansilva51.todolist.handler.GenerateTokenException;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Service
+public class TokenService {
+    @Value("${api.security.token.secret}")
+    private String secret;
+
+    public String generateToken(User user) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.create()
+                    .withIssuer("todo-list-api")
+                    .withSubject(user.getUsername())
+                    .withExpiresAt(getExpirationDate())
+                    .sign(algorithm);
+        } catch (JWTCreationException exception) {
+            throw new GenerateTokenException("Error while generating token: " + exception.getMessage());
+        }
+    }
+
+    public String validateToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("todo-list-api")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+        } catch (Exception exception) {
+            return "";
+        }
+    }
+
+    private Instant getExpirationDate() {
+        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    }
+}
