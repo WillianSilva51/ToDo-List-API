@@ -1,5 +1,6 @@
 package br.com.github.williiansilva51.todolist.configuration;
 
+import br.com.github.williiansilva51.todolist.handler.ResourceNotFoundException;
 import br.com.github.williiansilva51.todolist.repository.UserRepository;
 import br.com.github.williiansilva51.todolist.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -30,7 +31,8 @@ public class SecurityFilter extends OncePerRequestFilter {
             var username = tokenService.validateToken(token);
 
             if (!username.isEmpty()) {
-                UserDetails user = userRepository.findByUsername(username).orElseThrow();
+                UserDetails user = userRepository.findByUsername(username)
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found by username: " + username));
 
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
