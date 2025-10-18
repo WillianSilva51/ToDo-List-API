@@ -51,7 +51,7 @@ public class TaskService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
 
-        Task newTask = Task.builder().title(taskDTO.title()).description(taskDTO.description()).user(user).build();
+        Task newTask = Task.builder().title(taskDTO.title()).description(taskDTO.description()).user(user).createdAt(LocalDateTime.now()).build();
 
         return taskRepository.save(newTask);
     }
