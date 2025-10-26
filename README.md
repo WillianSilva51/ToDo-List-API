@@ -272,7 +272,7 @@ Para rodar os testes de integração e garantir que tudo está funcionando como 
 - [x] Conexão das tarefas aos usuários e isolamento de dados.
 - [x] Adição de verificação de posse para `update` e `delete`.
 - [x] Containerização com Docker e Docker Compose.
-- [ ] Implementação do `GlobalExceptionHandler` para tratamento centralizado de erros.
+- [x] Implementação do `GlobalExceptionHandler` para tratamento centralizado de erros.
 - [ ] Escrita de testes unitários e de integração.
 - [ ] Adicionar documentação da API com Swagger/OpenAPI.
 
