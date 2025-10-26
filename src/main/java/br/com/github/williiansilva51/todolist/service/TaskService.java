@@ -27,15 +27,31 @@ public class TaskService {
         return new TaskDTO(task.getTitle(), task.getDescription(), task.getCompleted(), task.getCreatedAt(), task.getCompletedAt());
     }
 
-    public TaskDTO getTaskById(Long id) throws ResourceNotFoundException {
-        return taskRepository.findById(id)
-                .map(this::taskToTaskDTO)
+    private User getUserAuth() throws ResourceNotFoundException {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+    }
+
+    private Task getTaskByUser(Long id) throws ResourceNotFoundException, SecurityException {
+        User user = getUserAuth();
+
+        Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+
+        if (!task.getUser().getId().equals(user.getId())) {
+            throw new SecurityException("User not authorized to update this task");
+        }
+
+        return task;
+    }
+
+    public TaskDTO getTaskById(Long id) throws ResourceNotFoundException {
+        Task task = getTaskByUser(id);
+        return taskToTaskDTO(task);
     }
 
     public List<TaskDTO> getAllTasks() throws ResourceNotFoundException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        User user = getUserAuth();
 
         return taskRepository.findByUser_Id(user.getId())
                 .stream()
@@ -44,29 +60,23 @@ public class TaskService {
     }
 
     public Task createTask(CreateTaskDTO taskDTO) throws IllegalArgumentException {
-        if (taskRepository.findByTitle(taskDTO.title()).isPresent()) {
-            throw new IllegalArgumentException("Task already exists with title: " + taskDTO.title());
+        User user = getUserAuth();
+
+        if (taskRepository.findByTitleAndUser_Id(taskDTO.title(), user.getId()).isPresent()) {
+            throw new IllegalArgumentException("User already has a task with title: " + taskDTO.title());
         }
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
-
-        Task newTask = Task.builder().title(taskDTO.title()).description(taskDTO.description()).user(user).createdAt(LocalDateTime.now()).build();
+        Task newTask = Task.builder().title(taskDTO.title())
+                .description(taskDTO.description())
+                .user(user)
+                .createdAt(LocalDateTime.now())
+                .build();
 
         return taskRepository.save(newTask);
     }
 
     public Task updateTask(Long id, UpdateTaskDTO taskDTO) throws ResourceNotFoundException, SecurityException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
-
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
-
-        if (!task.getUser().getId().equals(user.getId())) {
-            throw new SecurityException("User not authorized to update this task");
-        }
+        Task task = getTaskByUser(id);
 
         if (!task.getTitle().equals(taskDTO.title())) {
             task.setTitle(taskDTO.title());
@@ -89,8 +99,7 @@ public class TaskService {
     }
 
     public Boolean deleteTask(Long id) throws ResourceNotFoundException, SecurityException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        User user = getUserAuth();
 
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
