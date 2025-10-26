@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenAPIConfiguration {
     @Bean
-    public OpenAPI customOenAPI() {
+    public OpenAPI customOpenAPI() {
         return new OpenAPI().info(new Info().title("Todolist API").description("Todolist API").version("0.0.1-SNAPSHOT").termsOfService("""
                 https://swagger.io/terms/""").license(new License().name("MIT").url("""
                 https://springdoc.org""")).contact(new Contact().name("Willian").email("williansilva@alu.ufc.br")));
