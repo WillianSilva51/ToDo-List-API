@@ -21,7 +21,11 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List<TaskDTO>> getAllTasks(@RequestParam(required = false) String name) {
-        return name == null ? ResponseEntity.ok(taskService.getAllTasks()) : ResponseEntity.ok(taskService.findTasksByName(name));
+        if (name == null) {
+            return ResponseEntity.ok(taskService.getAllTasks());
+        } else {
+            return ResponseEntity.ok(taskService.findTasksByName(name));
+        }
     }
 
     @GetMapping("/{id}")
