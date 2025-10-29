@@ -50,6 +50,13 @@ public class TaskService {
         return taskToTaskDTO(task);
     }
 
+    public List<TaskDTO> findTasksByName(String name) {
+        User user = getUserAuth();
+
+        return taskRepository.findByTitleAndUser_Id(name, user.getId()).stream()
+                .map(this::taskToTaskDTO).toList();
+    }
+
     public List<TaskDTO> getAllTasks() throws ResourceNotFoundException {
         User user = getUserAuth();
 
@@ -90,10 +97,16 @@ public class TaskService {
             task.setCompleted(taskDTO.completed());
         }
 
-        if (task.getCompleted()) {
-            task.setCompletedAt(LocalDateTime.now());
-        } else
+        if (!task.getCompleted())
             task.setCompletedAt(null);
+
+        return taskRepository.save(task);
+    }
+
+    public Task completeTask(Long id) throws ResourceNotFoundException, SecurityException {
+        Task task = getTaskByUser(id);
+        task.setCompleted(true);
+        task.setCompletedAt(LocalDateTime.now());
 
         return taskRepository.save(task);
     }

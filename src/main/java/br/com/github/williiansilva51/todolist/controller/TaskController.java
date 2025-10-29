@@ -20,8 +20,8 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<List<TaskDTO>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    public ResponseEntity<List<TaskDTO>> getAllTasks(@RequestParam(required = false) String name) {
+        return name == null ? ResponseEntity.ok(taskService.getAllTasks()) : ResponseEntity.ok(taskService.findTasksByName(name));
     }
 
     @GetMapping("/{id}")
@@ -35,6 +35,14 @@ public class TaskController {
         TaskDTO taskResponse = taskService.taskToTaskDTO(createdTask);
 
         return ResponseEntity.created(URI.create("/tasks/" + createdTask.getId())).body(taskResponse);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TaskDTO> completeTask(@PathVariable Long id) {
+        Task completedTask = taskService.completeTask(id);
+        TaskDTO taskResponse = taskService.taskToTaskDTO(completedTask);
+
+        return ResponseEntity.ok(taskResponse);
     }
 
     @PutMapping("/{id}")
