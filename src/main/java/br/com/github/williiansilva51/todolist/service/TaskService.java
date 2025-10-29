@@ -97,8 +97,9 @@ public class TaskService {
             task.setCompleted(taskDTO.completed());
         }
 
-        if (!task.getCompleted())
+        if (!task.getCompleted()) {
             task.setCompletedAt(null);
+        }
 
         return taskRepository.save(task);
     }
