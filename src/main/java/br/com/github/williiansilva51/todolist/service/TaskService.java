@@ -50,11 +50,12 @@ public class TaskService {
         return taskToTaskDTO(task);
     }
 
-    public List<TaskDTO> findTasksByName(String name) {
+    public TaskDTO findTaskByName(String name) throws ResourceNotFoundException {
         User user = getUserAuth();
 
-        return taskRepository.findByTitleAndUser_Id(name, user.getId()).stream()
-                .map(this::taskToTaskDTO).toList();
+        return taskRepository.findByTitleAndUser_Id(name, user.getId())
+                .map(this::taskToTaskDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with name: " + name));
     }
 
     public List<TaskDTO> getAllTasks() throws ResourceNotFoundException {
